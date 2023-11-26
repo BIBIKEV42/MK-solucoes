@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Pedidos</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        form {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            animation: bounce 1s infinite;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+            animation: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        #modeloOrcamento,
+        #confirmacaoPedido {
+            display: none;
+        }
+
+        #mainContent {
+            display: none;
+        }
+
+        #loginContainer {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #loginContainer label,
+        #loginContainer input,
+        #loginContainer button {
+            width: 100%;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        #loginContainer button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #loginContainer button:hover {
+            background-color: #2980b9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #cadastroContainer {
+        display: none;
+        background-color: #fff;
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #cadastroContainer label,
+    #cadastroContainer input,
+    #cadastroContainer button {
+        width: 100%;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    #cadastroContainer button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #cadastroContainer button:hover {
+        background-color: #2980b9;
+    }
+    </style>
+</head>
+<body>
+    <div id="loginContainer">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" required>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" required>
+        <button onclick="login()">Login</button>
+        <button onclick="mostrarCadastro()">Cadastrar</button>
+
+    </div>
+
+    <div id="cadastroContainer" style="display: none;">
+        <h2>Cadastro de Usuário</h2>
+        <label for="newUsername">Novo Usuário:</label>
+        <input type="text" id="newUsername" required>
+        <label for="newPassword">Nova Senha:</label>
+        <input type="password" id="newPassword" required>
+        <button onclick="cadastrarUsuario()">Cadastrar</button>
+    </div>
+    
+    <div id="mainContent">
+        <h1>Sistema de Pedidos</h1>
+        <form id="pedidoForm">
+            <div class="form-group">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" id="nomeCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="enderecoCliente">Endereço do Cliente:</label>
+                <input type="text" id="enderecoCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="emailCliente">E-mail do Cliente:</label>
+                <input type="email" id="emailCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefoneCliente">Telefone do Cliente (DDD + Número):</label>
+                <input type="tel" id="telefoneCliente" required placeholder="Ex: (00) 123456789" maxlength="12">
+            </div>
+
+            <div class="form-group">
+                <label for="produtoCliente">Produto desejado:</label>
+                <select id="produtoCliente" required>
+                    <option value="Telhas para Licitação">Telhas para Licitação</option>
+                    <option value="Telha Residencial">Telha Residencial</option>
+                    <option value="Telha Industrial">Telha Industrial</option>
+                    <option value="Telhas para Chalé Suíço">Telhas para Chalé Suíço</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidadeProduto">Quantidade M2:</label>
+                <input type="number" id="quantidadeProduto" required>
+            </div>
+
+            <div class="form-group">
+                <label for="modoTelha">Modos de Telha:</label>
+                <select id="modoTelha" required>
+                    <option value="Telha Filme EPS">Telha Filme EPS</option>
+                    <option value="Telha Sanduiche EPS">Telha Sanduiche EPS</option>
+                    <option value="Telha Sanduiche pintada EPS">Telha Sanduiche pintada EPS</option>
+                    <option value="Telha Filme pintada EPS">Telha Filme pintada EPS</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Registrar Pedido">
+        </form>
+
+        <div id="modeloOrcamento"></div>
+
+        <div id="confirmacaoPedido">
+            <h2>Pedido Confirmado!</h2>
+            <p>Obrigado por seu pedido. Uma confirmação foi enviada para o seu e-mail.</p>
+        </div>
+
+        <h2>Pedidos Registrados:</h2>
+        <ul id="pedidosRegistrados"></ul>
+    </div>
+
+    <div id="popup" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharPopup()">&times;</span>
+            <div id="modeloOrcamentoPopup"></div>
+            <button onclick="imprimirOrcamento()">Imprimir Orçamento</button>
+        </div>
+    </div>
+
+    <script>
+
+const loginContainer = document.getElementById("loginContainer");
+const mainContent = document.getElementById("mainContent");
+
+function isLoggedIn(usernameInput, passwordInput) {
+    return usernameInput.value === "usuario" && passwordInput.value === "senha";
+}
+
+function login() {
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    if (isLoggedIn(usernameInput, passwordInput)) {
+        loginContainer.style.display = "none";
+        mainContent.style.display = "block";
+    } else {
+        alert("Credenciais inválidas. Tente novamente.");
+    }
+}
+
+const pedidoForm = document.getElementById("pedidoForm");
+const pedidosRegistrados = document.getElementById("pedidosRegistrados");
+const modeloOrcamentoDiv = document.getElementById("modeloOrcamento");
+const confirmacaoPedidoDiv = document.getElementById("confirmacaoPedido");
+
+pedidoForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    if (isLoggedIn(usernameInput, passwordInput)) {
+        const nomeCliente = document.getElementById("nomeCliente").value;
+        const enderecoCliente = document.getElementById("enderecoCliente").value;
+        const emailCliente = document.getElementById("emailCliente").value;
+        const telefoneCliente = document.getElementById("telefoneCliente").value;
+        const produtoCliente = document.getElementById("produtoCliente").value;
+        const quantidadeProduto = parseFloat(document.getElementById("quantidadeProduto").value);
+        const modoTelha = document.getElementById("modoTelha").value;
+
+        registrarPedido(nomeCliente, enderecoCliente, emailCliente, telefoneCliente, produtoCliente, quantidadeProduto, modoTelha);
+
+        pedidoForm.reset();
+    } else {
+        alert("Por favor, faça login antes de registrar um pedido.");
+    }
+});
+
+function displayModeloOrcamento(modeloOrcamento, clienteInfo) {
+    const modeloOrcamentoPopup = document.getElementById("modeloOrcamentoPopup");
+    modeloOrcamentoPopup.innerHTML = `<h2>Modelo de Orçamento</h2>${modeloOrcamento}<br><br><strong>Informações do Cliente:</strong><br>Nome: ${clienteInfo.nomeCliente}<br>Endereço: ${clienteInfo.enderecoCliente}<br>Email: ${clienteInfo.emailCliente}<br>Telefone: ${clienteInfo.telefoneCliente}`;
+    const popup = document.getElementById("popup");
+    popup.style.display = "block";
+}
+
+function fecharPopup() {
+    const popup = document.getElementById("popup");
+    popup.style.display = "none";
+}
+
+function imprimirOrcamento() {
+    const modeloOrcamentoPopup = document.getElementById("modeloOrcamentoPopup").innerHTML;
+    const janela = window.open('', 'Imprimir', 'width=600,height=600');
+    janela.document.open();
+    janela.document.write('<html><head><title>Imprimir Orçamento</title></head><body>');
+    janela.document.write(modeloOrcamentoPopup);
+    janela.document.write('</body></html>');
+    janela.document.close();
+    janela.print();
+}
+
+function sendConfirmationEmail(email) {
+    console.log(`Enviando confirmação para: ${email}`);
+}
+
+function registerPedido(pedido) {
+    const listItem = document.createElement("li");
+    listItem.textContent = `Nome: ${pedido.nomeCliente}, Endereço: ${pedido.enderecoCliente}, Email: ${pedido.emailCliente}, Telefone: ${pedido.telefoneCliente}, Produto: ${pedido.produtoCliente}, Quantidade: ${pedido.quantidadeProduto} m2, Modo de Telha: ${pedido.modoTelha}, Valor Total: R$ ${pedido.valorTotal.toFixed(2)}`;
+
+    pedidosRegistrados.appendChild(listItem);
+    confirmacaoPedidoDiv.style.display = "block";
+}
+
+function registrarPedido(nomeCliente, enderecoCliente, emailCliente, telefoneCliente, produtoCliente, quantidadeProduto, modoTelha) {
+    const valorTotal = calcularValorTotal(quantidadeProduto);
+    const pedido = {
+        nomeCliente,
+        enderecoCliente,
+        emailCliente,
+        telefoneCliente,
+        produtoCliente,
+        quantidadeProduto,
+        modoTelha,
+        valorTotal
+    };
+
+    sendConfirmationEmail(emailCliente);
+    displayModeloOrcamento("Modelo de orçamento: ...", pedido);
+    registerPedido(pedido);
+}
+
+function calcularValorTotal(quantidadeProduto) {
+ 
+    const precoUnitario = 10;  
+    return quantidadeProduto * precoUnitario;
+}
+function mostrarCadastro() {
+    const loginContainer = document.getElementById("loginContainer");
+    const cadastroContainer = document.getElementById("cadastroContainer");
+
+    loginContainer.style.display = "none";
+    cadastroContainer.style.display = "block";
+}
+
+function cadastrarUsuario() {
+    const newUsernameInput = document.getElementById("newUsername");
+    const newPasswordInput = document.getElementById("newPassword");
+
+    if (newUsernameInput.value && newPasswordInput.value) {
+         
+        alert("Usuário cadastrado com sucesso!");
+        mostrarLogin();  
+    } else {
+        alert("Por favor, preencha todos os campos.");
+    }
+}
+
+function mostrarLogin() {
+    const loginContainer = document.getElementById("loginContainer");
+    const cadastroContainer = document.getElementById("cadastroContainer");
+
+    loginContainer.style.display = "block";
+    cadastroContainer.style.display = "none";
+}
+</script>
+    
+</body>
+</html>
