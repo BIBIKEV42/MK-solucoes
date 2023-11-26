@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="loginContainer">
@@ -27,7 +28,51 @@
     <div id="mainContent" style="display: none;">
         <h1>Sistema de Pedidos</h1>
         <form id="pedidoForm">
-            <!-- Form fields go here -->
+            <div class="form-group">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" id="nomeCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="enderecoCliente">Endereço do Cliente:</label>
+                <input type="text" id="enderecoCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="emailCliente">E-mail do Cliente:</label>
+                <input type="email" id="emailCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefoneCliente">Telefone do Cliente (DDD + Número):</label>
+                <input type="tel" id="telefoneCliente" required placeholder="Ex: (00) 123456789" maxlength="12">
+            </div>
+
+            <div class="form-group">
+                <label for="produtoCliente">Produto desejado:</label>
+                <select id="produtoCliente" required>
+                    <option value="Telhas para Licitação">Telhas para Licitação</option>
+                    <option value="Telha Residencial">Telha Residencial</option>
+                    <option value="Telha Industrial">Telha Industrial</option>
+                    <option value="Telhas para Chalé Suíço">Telhas para Chalé Suíço</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidadeProduto">Quantidade M2:</label>
+                <input type="number" id="quantidadeProduto" required>
+            </div>
+
+            <div class="form-group">
+                <label for="modoTelha">Modos de Telha:</label>
+                <select id="modoTelha" required>
+                    <option value="Telha Filme EPS">Telha Filme EPS</option>
+                    <option value="Telha Sanduiche EPS">Telha Sanduiche EPS</option>
+                    <option value="Telha Sanduiche pintada EPS">Telha Sanduiche pintada EPS</option>
+                    <option value="Telha Filme pintada EPS">Telha Filme pintada EPS</option>
+                </select>
+            </div>
+
             <input type="submit" value="Registrar Pedido">
         </form>
 
@@ -49,5 +94,7 @@
             <button onclick="imprimirOrcamento()">Imprimir Orçamento</button>
         </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
