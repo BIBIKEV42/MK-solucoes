@@ -1,0 +1,224 @@
+ <div id="loginContainer">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" required>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" required>
+        <button onclick="login()">Login</button>
+        <button onclick="mostrarCadastro()">Cadastrar</button>
+    </div>
+
+    <div id="cadastroContainer" style="display: none;">
+        <h2>Cadastro de Usuário</h2>
+        <label for="newUsername">Novo Usuário:</label>
+        <input type="text" id="newUsername" required>
+        <label for="newPassword">Nova Senha:</label>
+        <input type="password" id="newPassword" required>
+        <button onclick="cadastrarUsuario()">Cadastrar</button>
+    </div>
+    
+    <div id="mainContent" style="display: none;">
+        <h1>Sistema de Pedidos</h1>
+        <form action="/pedido" method="post" id="pedidoForm">
+            <div class="form-group">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" name="nomeCliente" id="nomeCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="enderecoCliente">Endereço do Cliente:</label>
+                <input type="text" name="enderecoCliente" id="enderecoCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="emailCliente">E-mail do Cliente:</label>
+                <input type="email" name="emailCliente" id="emailCliente" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefoneCliente">Telefone do Cliente (DDD + Número):</label>
+                <input type="tel" name="telefoneCliente" id="telefoneCliente" required placeholder="Ex: (00) 123456789" maxlength="12">
+            </div>
+
+            <div class="form-group">
+                <label for="produtoCliente">Produto desejado:</label>
+                <select name="produtoCliente" id="produtoCliente" required>
+                    <option value="Telhas para Licitação">Telhas para Licitação</option>
+                    <option value="Telha Residencial">Telha Residencial</option>
+                    <option value="Telha Industrial">Telha Industrial</option>
+                    <option value="Telhas para Chalé Suíço">Telhas para Chalé Suíço</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidadeProduto">Quantidade M2:</label>
+                <input type="number" name="quantidadeProduto" id="quantidadeProduto" required>
+            </div>
+
+            <div class="form-group">
+                <label for="modoTelha">Modos de Telha:</label>
+                <select name="modoTelha" id="modoTelha" required>
+                    <option value="Telha Filme EPS">Telha Filme EPS</option>
+                    <option value="Telha Sanduiche EPS">Telha Sanduiche EPS</option>
+                    <option value="Telha Sanduiche pintada EPS">Telha Sanduiche pintada EPS</option>
+                    <option value="Telha Filme pintada EPS">Telha Filme pintada EPS</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Registrar Pedido">
+        </form>
+
+        <div id="modeloOrcamento"></div>
+
+        <div id="confirmacaoPedido">
+            <h2>Pedido Confirmado!</h2>
+            <p>Obrigado por seu pedido. Uma confirmação foi enviada para o seu e-mail.</p>
+        </div>
+
+        <h2>Pedidos Registrados:</h2>
+        <ul id="pedidosRegistrados"></ul>
+    </div>
+
+    <div id="popup" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharPopup()">&times;</span>
+            <div id="modeloOrcamentoPopup"></div>
+            <button onclick="imprimirOrcamento()">Imprimir Orçamento</button>
+        </div>
+    </div>
+
+
+
+    <script>
+      const loginContainer = document.getElementById("loginContainer");
+const mainContent = document.getElementById("mainContent");
+
+function isLoggedIn(usernameInput, passwordInput) {
+    return usernameInput.value === "usuario" && passwordInput.value === "senha";
+}
+
+function login() {
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    if (isLoggedIn(usernameInput, passwordInput)) {
+        loginContainer.style.display = "none";
+        mainContent.style.display = "block";
+    } else {
+        alert("Credenciais inválidas. Tente novamente.");
+    }
+}
+
+const pedidoForm = document.getElementById("pedidoForm");
+const pedidosRegistrados = document.getElementById("pedidosRegistrados");
+const modeloOrcamentoDiv = document.getElementById("modeloOrcamento");
+const confirmacaoPedidoDiv = document.getElementById("confirmacaoPedido");
+
+/*pedidoForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    if (isLoggedIn(usernameInput, passwordInput)) {
+        const nomeCliente = document.getElementById("nomeCliente").value;
+        const enderecoCliente = document.getElementById("enderecoCliente").value;
+        const emailCliente = document.getElementById("emailCliente").value;
+        const telefoneCliente = document.getElementById("telefoneCliente").value;
+        const produtoCliente = document.getElementById("produtoCliente").value;
+        const quantidadeProduto = parseFloat(document.getElementById("quantidadeProduto").value);
+        const modoTelha = document.getElementById("modoTelha").value;
+
+        registrarPedido(nomeCliente, enderecoCliente, emailCliente, telefoneCliente, produtoCliente, quantidadeProduto, modoTelha);
+
+        pedidoForm.reset();
+    } else {
+        alert("Por favor, faça login antes de registrar um pedido.");
+    }
+});*/
+
+function displayModeloOrcamento(modeloOrcamento, clienteInfo) {
+    const modeloOrcamentoPopup = document.getElementById("modeloOrcamentoPopup");
+    modeloOrcamentoPopup.innerHTML = `<h2>Modelo de Orçamento</h2>${modeloOrcamento}<br><br><strong>Informações do Cliente:</strong><br>Nome: ${clienteInfo.nomeCliente}<br>Endereço: ${clienteInfo.enderecoCliente}<br>Email: ${clienteInfo.emailCliente}<br>Telefone: ${clienteInfo.telefoneCliente}`;
+    const popup = document.getElementById("popup");
+    popup.style.display = "block";
+}
+
+function fecharPopup() {
+    const popup = document.getElementById("popup");
+    popup.style.display = "none";
+}
+
+function imprimirOrcamento() {
+    const modeloOrcamentoPopup = document.getElementById("modeloOrcamentoPopup").innerHTML;
+    const janela = window.open('', 'Imprimir', 'width=600,height=600');
+    janela.document.open();
+    janela.document.write('<html><head><title>Imprimir Orçamento</title></head><body>');
+    janela.document.write(modeloOrcamentoPopup);
+    janela.document.write('</body></html>');
+    janela.document.close();
+    janela.print();
+}
+
+function sendConfirmationEmail(email) {
+    console.log(`Enviando confirmação para: ${email}`);
+}
+
+function registerPedido(pedido) {
+    const listItem = document.createElement("li");
+    listItem.textContent = `Nome: ${pedido.nomeCliente}, Endereço: ${pedido.enderecoCliente}, Email: ${pedido.emailCliente}, Telefone: ${pedido.telefoneCliente}, Produto: ${pedido.produtoCliente}, Quantidade: ${pedido.quantidadeProduto} m2, Modo de Telha: ${pedido.modoTelha}, Valor Total: R$ ${pedido.valorTotal.toFixed(2)}`;
+
+    pedidosRegistrados.appendChild(listItem);
+    confirmacaoPedidoDiv.style.display = "block";
+}
+
+function registrarPedido(nomeCliente, enderecoCliente, emailCliente, telefoneCliente, produtoCliente, quantidadeProduto, modoTelha) {
+    const valorTotal = calcularValorTotal(quantidadeProduto);
+    const pedido = {
+        nomeCliente,
+        enderecoCliente,
+        emailCliente,
+        telefoneCliente,
+        produtoCliente,
+        quantidadeProduto,
+        modoTelha,
+        valorTotal
+    };
+
+    sendConfirmationEmail(emailCliente);
+    displayModeloOrcamento("Modelo de orçamento: ...", pedido);
+    registerPedido(pedido);
+}
+
+function calcularValorTotal(quantidadeProduto) {
+    const precoUnitario = 10;  
+    return quantidadeProduto * precoUnitario;
+}
+
+function mostrarCadastro() {
+    const loginContainer = document.getElementById("loginContainer");
+    const cadastroContainer = document.getElementById("cadastroContainer");
+
+    loginContainer.style.display = "none";
+    cadastroContainer.style.display = "block";
+}
+
+function cadastrarUsuario() {
+    const newUsernameInput = document.getElementById("newUsername");
+    const newPasswordInput = document.getElementById("newPassword");
+
+    if (newUsernameInput.value && newPasswordInput.value) {
+        alert("Usuário cadastrado com sucesso!");
+        mostrarLogin();  
+    } else {
+        alert("Por favor, preencha todos os campos.");
+    }
+}
+
+function mostrarLogin() {
+    const loginContainer = document.getElementById("loginContainer");
+    const cadastroContainer = document.getElementById("cadastroContainer");
+
+    loginContainer.style.display = "block";
+    cadastroContainer.style.display = "none";
+}
+    </script>
