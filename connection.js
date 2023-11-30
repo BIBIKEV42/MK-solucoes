@@ -15,4 +15,4 @@ DB.authenticate()
         console.error("Erro de conexão:", err);
     });
 
-module.exports = { DB, Sequelize };
+module.exports = DB;
