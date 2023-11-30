@@ -1,100 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Pedidos</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div id="loginContainer">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" required>
-        <label for="password">Senha:</label>
-        <input type="password" id="password" required>
-        <button onclick="login()">Login</button>
-        <button onclick="mostrarCadastro()">Cadastrar</button>
-    </div>
+const express = require('express');
+const app = express();
+const Pedidos = require("./DAO/PedidosDAO");
 
-    <div id="cadastroContainer" style="display: none;">
-        <h2>Cadastro de Usuário</h2>
-        <label for="newUsername">Novo Usuário:</label>
-        <input type="text" id="newUsername" required>
-        <label for="newPassword">Nova Senha:</label>
-        <input type="password" id="newPassword" required>
-        <button onclick="cadastrarUsuario()">Cadastrar</button>
-    </div>
-    
-    <div id="mainContent" style="display: none;">
-        <h1>Sistema de Pedidos</h1>
-        <form id="pedidoForm">
-            <div class="form-group">
-                <label for="nomeCliente">Nome do Cliente:</label>
-                <input type="text" id="nomeCliente" required>
-            </div>
+// BodyParser
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-            <div class="form-group">
-                <label for="enderecoCliente">Endereço do Cliente:</label>
-                <input type="text" id="enderecoCliente" required>
-            </div>
+// Config Template Engine Handlebars
+const handlebars = require('express-handlebars');
+app.engine('handlebars', handlebars({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
-            <div class="form-group">
-                <label for="emailCliente">E-mail do Cliente:</label>
-                <input type="email" id="emailCliente" required>
-            </div>
+app.get('/pedido', function(req, res) {
+    res.render('pedido');
+});
 
-            <div class="form-group">
-                <label for="telefoneCliente">Telefone do Cliente (DDD + Número):</label>
-                <input type="tel" id="telefoneCliente" required placeholder="Ex: (00) 123456789" maxlength="12">
-            </div>
+app.post('/pedido', function(req, res) {
+    Pedidos.create({
+        Nome: req.body.nomeCliente,
+        Endereco: req.body.enderecoCliente,
+        Email: req.body.emailCliente,
+        Telefone: req.body.telefoneCliente,
+        Produto: req.body.produtoCliente,
+        Quantidadem2: req.body.quantidadeProduto,
+        ModoTelha: req.body.modoTelha
+        // Adicionar outras propriedades ao objeto conforme for necessário
+    })
+    .then(function() {
+        res.redirect('pedido');
+    })
+    .catch(function(erro) {
+        console.error("Falha:", erro);
+        res.status(500).json({ erro: "Falha: " + erro });
+    });
+});
 
-            <div class="form-group">
-                <label for="produtoCliente">Produto desejado:</label>
-                <select id="produtoCliente" required>
-                    <option value="Telhas para Licitação">Telhas para Licitação</option>
-                    <option value="Telha Residencial">Telha Residencial</option>
-                    <option value="Telha Industrial">Telha Industrial</option>
-                    <option value="Telhas para Chalé Suíço">Telhas para Chalé Suíço</option>
-                </select>
-            </div>
+/*app.get('/login', function(req, res) {
+    res.render('login');
+});
 
-            <div class="form-group">
-                <label for="quantidadeProduto">Quantidade M2:</label>
-                <input type="number" id="quantidadeProduto" required>
-            </div>
+app.post('/login', function(req, res) {
+    if (req.body.username == "usuario" && req.body.password == "senha") {
+        res.redirect('test');
+    } else {
+        // Lógica para lidar com login inválido
+    }
+});*/
 
-            <div class="form-group">
-                <label for="modoTelha">Modos de Telha:</label>
-                <select id="modoTelha" required>
-                    <option value="Telha Filme EPS">Telha Filme EPS</option>
-                    <option value="Telha Sanduiche EPS">Telha Sanduiche EPS</option>
-                    <option value="Telha Sanduiche pintada EPS">Telha Sanduiche pintada EPS</option>
-                    <option value="Telha Filme pintada EPS">Telha Filme pintada EPS</option>
-                </select>
-            </div>
+//req.flash("success_msg", "Pedido gerado com sucesso!")
 
-            <input type="submit" value="Registrar Pedido">
-        </form>
-
-        <div id="modeloOrcamento"></div>
-
-        <div id="confirmacaoPedido">
-            <h2>Pedido Confirmado!</h2>
-            <p>Obrigado por seu pedido. Uma confirmação foi enviada para o seu e-mail.</p>
-        </div>
-
-        <h2>Pedidos Registrados:</h2>
-        <ul id="pedidosRegistrados"></ul>
-    </div>
-
-    <div id="popup" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharPopup()">&times;</span>
-            <div id="modeloOrcamentoPopup"></div>
-            <button onclick="imprimirOrcamento()">Imprimir Orçamento</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+// localhost:8080
+app.listen(8080, function() {
+    console.log("Servidor Rodando");
+});
