@@ -38,7 +38,7 @@ const Pedidos = DB.define('pedidos', {
     }
 }, {
     // Definindo explicitamente o nome da tabela no singular
-    tableName: 'pedido',
+    tableName: 'pedidos',
 });
 
 // Descomentar quando estiver pronto para criar a tabela no banco de dados
